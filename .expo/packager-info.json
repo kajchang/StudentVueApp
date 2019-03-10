@@ -2,8 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 96385,
+  "packagerPid": 98205,
   "expoServerNgrokUrl": "https://a2-hhg.anonymous.studentvueapp.exp.direct",
   "packagerNgrokUrl": "https://packager.a2-hhg.anonymous.studentvueapp.exp.direct",
-  "ngrokPid": 96406
+  "ngrokPid": 98223,
+  "webpackServerPort": null
 }
