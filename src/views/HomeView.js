@@ -1,9 +1,11 @@
 import React from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableHighlight } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Switch, TouchableHighlight } from 'react-native';
 
 import cheerio from 'react-native-cheerio';
 
-export default class LoginView extends React.Component {
+import storage from '../storage/CredentialStorage';
+
+export default class HomeView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -16,11 +18,19 @@ export default class LoginView extends React.Component {
         this.login = this.login.bind(this);
     }
 
+    componentDidMount() {
+        storage.getCredentials()
+            .then(credentials => {
+                if (credentials !== null) {
+                    this.setState(JSON.parse(credentials));
+                }
+            });
+    }
+
     login() {
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
-            .then(res => res.text())
-            .then(html => {
-                const $ = cheerio.load(html);
+            .then(async (res) => {
+                const $ = cheerio.load(await res.text());
                 const params = {};
                 $('#aspnetForm > input').each(function () {
                     params[$(this).attr('name')] = $(this).attr('value');
@@ -28,29 +38,33 @@ export default class LoginView extends React.Component {
                 params['ctl00$MainContent$username'] = this.state.username;
                 params['ctl00$MainContent$password'] = this.state.password;
 
-                this.setState({
-                    username: '',
-                    password: ''
-                });
-
                 let formBody = [];
                 for (const property in params) {
                     const encodedKey = encodeURIComponent(property);
                     const encodedValue = encodeURIComponent(params[property]);
-                    formBody.push(encodedKey + "=" + encodedValue);
+                    formBody.push(encodedKey + '=' + encodedValue);
                 }
 
                 return fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?Logout=1&regenerateSessionId=True', {
                     method: 'POST',
                     headers: {
+                        cookie: res.headers.get('set-cookie'),
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     body: formBody.join('&')
                 });
             })
             .then(res => {
-                if (res.url !== 'https://portal.sfusd.edu/PXP2_Login.aspx') {
+                if (res.url !== 'https://portal.sfusd.edu/Home_PXP2.aspx') {
+                    this.setState({
+                        username: '',
+                        password: ''
+                    });
+
                     throw 'Incorrect Username or Password';
+                } else {
+                    storage.setCredentials(this.state.username, this.state.password);
+                    this.props.navigation.replace('Landing', { cookies: res.headers.get('set-cookie') });
                 }
             })
             .catch((error) => this.setState({ error }));
@@ -125,7 +139,7 @@ const styles = StyleSheet.create({
     },
     error: {
         color: '#ff0000',
-        paddingTop: 15,
-        paddingBottom: 15
+        paddingTop: 7.5,
+        paddingBottom: 7.5
     }
 });
