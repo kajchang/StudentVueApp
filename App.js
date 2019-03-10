@@ -6,7 +6,10 @@ import LandingView from './src/views/LandingView';
 
 const MainNavigator = createStackNavigator({
     Login: { screen: LoginView },
-    Landing: { screen: LandingView }
+    Landing: { screen: LandingView },
+}, {
+    initialRouteName: 'Login',
+    headerMode: 'none'
 });
 
 const App = createAppContainer(MainNavigator);
