@@ -1,11 +1,12 @@
 import React from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Switch, TouchableHighlight } from 'react-native';
+import { KeyboardAvoidingView, Text, TextInput, TouchableHighlight } from 'react-native';
 
 import cheerio from 'react-native-cheerio';
 
+import styles from '../styles';
 import storage from '../storage/CredentialStorage';
 
-export default class HomeView extends React.Component {
+export default class LoginView extends React.Component {
     constructor(props) {
         super(props);
 
@@ -29,7 +30,7 @@ export default class HomeView extends React.Component {
 
     login() {
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
-            .then(async (res) => {
+            .then(async res => {
                 const $ = cheerio.load(await res.text());
                 const params = {};
                 $('#aspnetForm > input').each(function () {
@@ -45,6 +46,8 @@ export default class HomeView extends React.Component {
                     formBody.push(encodedKey + '=' + encodedValue);
                 }
 
+                storage.setCookies(res.headers.get('set-cookie'));
+
                 return fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?Logout=1&regenerateSessionId=True', {
                     method: 'POST',
                     headers: {
@@ -56,18 +59,13 @@ export default class HomeView extends React.Component {
             })
             .then(res => {
                 if (res.url !== 'https://portal.sfusd.edu/Home_PXP2.aspx') {
-                    this.setState({
-                        username: '',
-                        password: ''
-                    });
-
                     throw 'Incorrect Username or Password';
                 } else {
                     storage.setCredentials(this.state.username, this.state.password);
-                    this.props.navigation.replace('Landing', { cookies: res.headers.get('set-cookie') });
+                    this.props.navigation.replace('Landing');
                 }
             })
-            .catch((error) => this.setState({ error }));
+            .catch(error => this.setState({ error }));
     }
 
     render() {
@@ -75,13 +73,13 @@ export default class HomeView extends React.Component {
             <KeyboardAvoidingView style={ styles.container } behavior='padding'>
                 <Text style={ styles.header }>StudentVue</Text>
                 <TextInput
-                    style={ styles.input }
+                    style={ [styles.bordered, styles.textCentered] }
                     placeholder='Username'
                     value={ this.state.username }
                     onChangeText={ (username) => this.setState({ username }) }
                 />
                 <TextInput
-                    style={ styles.input }
+                    style={ [styles.bordered, styles.textCentered] }
                     autoComplete='password'
                     secureTextEntry={ true }
                     placeholder='Password'
@@ -89,57 +87,16 @@ export default class HomeView extends React.Component {
                     onChangeText={ (password) => this.setState({ password }) }
                 />
                 <TouchableHighlight
-                    style={ styles.button }
+                    style={ [styles.bordered, { backgroundColor: '#a42929' }] }
                     underlayColor='#8a0f0f'
                     onPress={ this.login }
                 >
                     <Text
-                        style={ styles.buttonText }
+                        style={ [styles.textCentered, styles.slightlyPadded] }
                     >Submit</Text>
                 </TouchableHighlight>
-                <Text style={ styles.error }>{ this.state.error }</Text>
+                <Text style={ [styles.slightlyPadded, { color: '#ff0000' }] }>{ this.state.error }</Text>
             </KeyboardAvoidingView>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    header: {
-        fontSize: 36,
-        padding: 25
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    input: {
-        width: '75%',
-        height: 50,
-        margin: 2.5,
-        textAlign: 'center',
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#d6d7da'
-    },
-    button: {
-        width: '75%',
-        height: 50,
-        margin: 2.5,
-        borderRadius: 4,
-        borderWidth: 0.5,
-        borderColor: '#d6d7da',
-        backgroundColor:'#a42929'
-    },
-    buttonText: {
-        textAlign: 'center',
-        paddingTop: 15,
-        paddingBottom: 15
-    },
-    error: {
-        color: '#ff0000',
-        paddingTop: 7.5,
-        paddingBottom: 7.5
-    }
-});

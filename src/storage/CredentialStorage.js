@@ -8,7 +8,12 @@ const setCredentials = (username, password) => {
 };
 const getCredentials = () => AsyncStorage.getItem('@StudentVue:credentials');
 
+const setCookies = (sessionId) => AsyncStorage.setItem('@StudentVue:sessionId', sessionId);
+const getCookies = () => AsyncStorage.getItem('@StudentVue:sessionId');
+
 export default {
     setCredentials: setCredentials,
-    getCredentials: getCredentials
+    getCredentials: getCredentials,
+    setCookies: setCookies,
+    getCookies: getCookies
 };
