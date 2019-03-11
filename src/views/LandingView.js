@@ -82,17 +82,35 @@ export default class LandingView extends React.Component {
                 const today = new Date;
 
                 const minutes = today.getHours() * 60 + today.getMinutes();
+
                 if (this.state.code === 'M' || this.state.code === 'N') {
                     const scheduleType = this.state.code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
 
-                    for (let block of Object.keys(bellSchedule[scheduleType])) {
-                        const startMinutes = this.parseTime(bellSchedule[scheduleType][block]['Start Time']);
-                        const endMinutes = this.parseTime(bellSchedule[scheduleType][block]['End Time']);
+                    const blocks = Object.keys(bellSchedule[scheduleType]).map(block => new Object({
+                        block: block,
+                        startMinutes: this.parseTime(bellSchedule[scheduleType][block]['Start Time']),
+                        endMinutes: this.parseTime(bellSchedule[scheduleType][block]['End Time'])
+                    })).sort((a, b) => a['startMinutes'] - b['startMinutes']);
 
-                        // before school
-                        if (minutes < startMinutes) {
+                    if (minutes < blocks[0].startMinutes) {
+                        this.setState({
+                            scheduleMessage: `School starts at ${ bellSchedule[scheduleType][blocks[0].block]['Start Time'] } Today!`
+                        });
+                    } else if (minutes > blocks[blocks.length - 1].endMinutes) {
+                        this.setState({
+                            scheduleMessage: `School is out for the day!`
+                        });
+                    }
+
+                    for (const [idx, block] of blocks.entries()) {
+                        if (minutes > block.startMinutes && minutes < block.endMinutes) {
                             this.setState({
-                                scheduleMessage: `School starts at ${ bellSchedule[scheduleType][block]['Start Time'] } Today!`
+                                scheduleMessage: `Current Class is Period ${ block.block } which ends at ${ bellSchedule[scheduleType][block.block]['End Time'] }.`
+                            });
+                            break;
+                        } else if (minutes > block.endMinutes && minutes < blocks[idx + 1].startMinutes) {
+                            this.setState({
+                                scheduleMessage: `Next Class is Period ${blocks[idx + 1].block} which starts at ${bellSchedule[scheduleType][blocks[idx + 1].block]['End Time']}.`
                             });
                             break;
                         }
