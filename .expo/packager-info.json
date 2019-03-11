@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 7744,
+  "packagerPid": 10208,
   "expoServerNgrokUrl": "https://gc-8t4.anonymous.studentvueapp.exp.direct",
   "packagerNgrokUrl": "https://packager.gc-8t4.anonymous.studentvueapp.exp.direct",
-  "ngrokPid": 7764,
+  "ngrokPid": 10225,
   "webpackServerPort": null
 }

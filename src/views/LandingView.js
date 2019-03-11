@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableHighlight, ActivityIndicator, FlatList, Image } from 'react-native';
-import { Header, ListItem, Card } from 'react-native-elements';
+import { Header, ListItem, Card, Divider } from 'react-native-elements';
 
 import cheerio from 'react-native-cheerio';
 
@@ -13,10 +13,9 @@ export default class LandingView extends React.Component {
         this.state = {
             loaded: false,
             name: '',
-            imageURL: '',
-            studentName: '',
             studentID: '',
-            schoolName: ''
+            code: '',
+            scheduleMessage: ''
         };
 
         this.cookies = '';
@@ -59,17 +58,57 @@ export default class LandingView extends React.Component {
                 this.setState({
                     loaded: true,
                     name: /Good [a-zA-z]+, (.+), [0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/g.exec($('#Greeting').text())[1],
-                    imageURL: `https://portal.sfusd.edu/${$('.student-photo > img').attr('src')}`,
-                    studentName: $('.student-name').text(),
-                    studentID: $('.student-id').text(),
-                    schoolName: $('.school').text()
+                    studentID: /ID: ([0-9]{8})/.exec($('.student-id').text())[1]
                 });
             });
+
+        fetch('https://kajchang.github.io/LowellAPI/event_calendar.json')
+            .then(async res => {
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                const eventCalendar = await res.json();
+                const today = new Date;
+
+                this.setState({
+                    code: eventCalendar[monthNames[today.getMonth()].toUpperCase()]['days'][String(today.getDate())]
+                });
+
+                return fetch('https://kajchang.github.io/LowellAPI/bell_schedules.json');
+            })
+            .then(async res => {
+                const bellSchedule = await res.json();
+                const today = new Date;
+
+                const minutes = today.getHours() * 60 + today.getMinutes();
+                if (this.state.code === 'M' || this.state.code === 'N') {
+                    const scheduleType = this.state.code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
+
+                    for (let block of Object.keys(bellSchedule[scheduleType])) {
+                        const startMinutes = this.parseTime(bellSchedule[scheduleType][block]['Start Time']);
+                        const endMinutes = this.parseTime(bellSchedule[scheduleType][block]['End Time']);
+
+                        // before school
+                        if (minutes < startMinutes) {
+                            this.setState({
+                                scheduleMessage: `School starts at ${ bellSchedule[scheduleType][block]['Start Time'] } Today!`
+                            });
+                            break;
+                        }
+                    }
+                }
+            });
+    }
+
+    parseTime(time) {
+        const parsedTime =  /([0-9]{1,2}):([0-9]{1,2}) ([AP])M/.exec(time);
+        return parseInt(parsedTime[1]) * 60 + parseInt(parsedTime[2]) + (parseInt(parsedTime[1]) !== 12 && parsedTime[3] === 'P' ? 12 * 60 : 0);
     }
 
     render() {
         return (
-            this.state.loaded ? (<View style={ { flex: 1 } }>
+            this.state.loaded ? (<View>
                 <Header
                     containerStyle={{
                         backgroundColor: '#29a4a4',
@@ -86,24 +125,22 @@ export default class LandingView extends React.Component {
                     </TouchableHighlight>}
                 />
                 <Card>
-                    <Image
-                        style={ { width: 50, height: 50 } }
-                        source={ { uri: this.state.imageURL, headers: { Cookie: this.cookies } } }
-                    />
-                    <Text style={ styles.slightlyPadded }>
-                        { this.state.studentName + '\n' }
-                        { this.state.studentID + '\n' }
-                        { this.state.schoolName }
+                    <Text style={ { fontSize: 18, padding: 10 } }>
+                        Student ID: { this.state.studentID }
+                        <Text style={ { fontSize: 10 } }> Generate Barcode</Text>
                     </Text>
+                    <Divider/>
+                    <Text style={ { fontSize: 18, padding: 10 } }>{ this.state.scheduleMessage }</Text>
                 </Card>
                 <FlatList
                     scrollEnabled={ false }
                     data={ this.pages }
                     renderItem={ ({ item }) => <TouchableHighlight
                         onPress={ () => {} }
-                        underlayColor='#29a4a4'
+                        underlayColor={ '#29a4a4' }
                     >
                         <ListItem
+
                             containerStyle={ { padding: 30 } }
                             leftIcon={ item.icon }
                             title={ item.title }

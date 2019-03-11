@@ -92,7 +92,7 @@ export default class LoginView extends React.Component {
                 />
                 <TouchableHighlight
                     style={ [styles.bordered, { backgroundColor: '#a42929' }] }
-                    underlayColor='#8a0f0f'
+                    underlayColor={ '#8a0f0f' }
                     onPress={ this.login }
                 >
                     <Text
