@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableHighlight, ActivityIndicator, FlatList } from 'react-native';
-import { Header, ListItem } from 'react-native-elements';
+import { View, Text, TouchableHighlight, ActivityIndicator, FlatList, Image } from 'react-native';
+import { Header, ListItem, Card } from 'react-native-elements';
 
 import cheerio from 'react-native-cheerio';
 
-import styles from '../styles';
 import storage from '../storage/CredentialStorage';
 
 export default class LandingView extends React.Component {
@@ -13,8 +12,14 @@ export default class LandingView extends React.Component {
 
         this.state = {
             loaded: false,
-            name: ''
+            name: '',
+            imageURL: '',
+            studentName: '',
+            studentID: '',
+            schoolName: ''
         };
+
+        this.cookies = '';
 
         this.pages = [
             {
@@ -34,9 +39,13 @@ export default class LandingView extends React.Component {
                 icon: { name: 'grade', size: 30 }
             }
         ];
+    }
 
+    componentDidMount() {
         storage.getCookies()
             .then(cookies => {
+                this.cookies = cookies;
+
                 return fetch('https://portal.sfusd.edu/Home_PXP2.aspx', {
                     method: 'GET',
                     headers: {
@@ -49,7 +58,11 @@ export default class LandingView extends React.Component {
 
                 this.setState({
                     loaded: true,
-                    name: /Good [a-zA-z]+, (.+), [0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/g.exec($('#Greeting').text())[1]
+                    name: /Good [a-zA-z]+, (.+), [0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/g.exec($('#Greeting').text())[1],
+                    imageURL: `https://portal.sfusd.edu/${$('.student-photo > img').attr('src')}`,
+                    studentName: $('.student-name').text(),
+                    studentID: $('.student-id').text(),
+                    schoolName: $('.school').text()
                 });
             });
     }
@@ -60,29 +73,45 @@ export default class LandingView extends React.Component {
                 <Header
                     containerStyle={{
                         backgroundColor: '#29a4a4',
-                        justifyContent: 'space-around',
+                        justifyContent: 'space-around'
                     }}
-                    centerComponent={{ text: this.state.name, style: { fontSize: 20, color: '#fff' } }}
-                />
-                <FlatList
-                    data={ this.pages }
-                    renderItem={ ({ item }) => <ListItem
-                        leftIcon={ item.icon }
-                        title={ item.title }
-                    /> }
-                    keyExtractor={ item => item.title }
-                />
-                <View style={ styles.container }>
-                    <TouchableHighlight
-                        style={ [styles.bordered, { backgroundColor: '#a42929' }] }
-                        underlayColor='#8a0f0f'
+                    centerComponent={ { text: this.state.name, style: { fontSize: 20, color: '#fff' } } }
+                    rightComponent={<TouchableHighlight
+                        underlayColor='#29a4a4'
                         onPress={ () => this.props.navigation.replace('Login') }
                     >
                         <Text
-                            style={ [styles.textCentered, styles.slightlyPadded] }
+                            style={ { fontSize: 20, color: '#fff' } }
                         >Logout</Text>
-                    </TouchableHighlight>
-                </View>
+                    </TouchableHighlight>}
+                />
+                <Card>
+                    <Image
+                        style={ { width: 50, height: 50 } }
+                        source={ { uri: this.state.imageURL, headers: { Cookie: this.cookies } } }
+                    />
+                    <Text style={ styles.slightlyPadded }>
+                        { this.state.studentName + '\n' }
+                        { this.state.studentID + '\n' }
+                        { this.state.schoolName }
+                    </Text>
+                </Card>
+                <FlatList
+                    scrollEnabled={ false }
+                    data={ this.pages }
+                    renderItem={ ({ item }) => <TouchableHighlight
+                        onPress={ () => {} }
+                        underlayColor='#29a4a4'
+                    >
+                        <ListItem
+                            containerStyle={ { padding: 30 } }
+                            leftIcon={ item.icon }
+                            title={ item.title }
+                            chevron
+                        />
+                    </TouchableHighlight> }
+                    keyExtractor={ item => item.title }
+                />
             </View>) : <View style={ styles.container }><ActivityIndicator size='large' color={ '#0000ff' }/></View>
         );
     }

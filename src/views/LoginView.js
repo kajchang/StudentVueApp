@@ -6,6 +6,8 @@ import cheerio from 'react-native-cheerio';
 import styles from '../styles';
 import storage from '../storage/CredentialStorage';
 
+import RCTNetworking from 'RCTNetworking';
+
 export default class LoginView extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +31,8 @@ export default class LoginView extends React.Component {
     }
 
     login() {
+        RCTNetworking.clearCookies(() => {});
+
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
             .then(async res => {
                 const $ = cheerio.load(await res.text());
