@@ -91,7 +91,7 @@ const ScheduleCard = props => {
             </Text>
             <TouchableHighlight
                 style={ { paddingLeft: 10, paddingBottom: 10 } }
-                onPress={ () => {} }
+                onPress={ () => { props.navigation.replace('Barcode') } }
                 underlayColor={ '#fff' }
             >
                 <Text style={ { fontSize: 10, color: '#29a4a4' } }> Show Barcode</Text>

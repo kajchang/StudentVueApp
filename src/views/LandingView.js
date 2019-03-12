@@ -2,15 +2,16 @@ import React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux'
 
-
 import { Header, Menu, ScheduleCard } from '../components';
 
 const LandingView = props => <View>
     <Header
         name={ props.studentInfo.name }
-        { ...props }
+        navigation={ props.navigation }
     />
-    <ScheduleCard/>
+    <ScheduleCard
+        navigation={ props.navigation }
+    />
     <Menu
         pages={ [
             {

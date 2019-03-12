@@ -5,14 +5,14 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducer from './src/reducers';
 
-import LoginView from './src/views/LoginView';
-import LandingView from './src/views/LandingView';
+import { LoginView, LandingView, BarcodeView } from './src/views';
 
 const store = createStore(reducer);
 
 const MainNavigator = createStackNavigator({
     Login: { screen: LoginView },
     Landing: { screen: LandingView },
+    Barcode: { screen: BarcodeView }
 }, {
     initialRouteName: 'Login',
     headerMode: 'none'
