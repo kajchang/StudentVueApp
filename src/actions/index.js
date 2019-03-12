@@ -18,3 +18,7 @@ export const setStudentInfo = studentInfo => ({
     data: studentInfo
 });
 
+export const clearStudentInfo = () => ({
+   type: 'CLEAR_STUDENT_INFO'
+});
+

@@ -23,6 +23,8 @@ export default (state = defaultState, action) => {
             return Object.assign({}, state, { eventCalendar: Object.assign(action.data || state.eventCalendar, { loaded: true }) } );
         case 'SET_STUDENT_INFO':
             return Object.assign({}, state, { studentInfo: Object.assign(action.data || state.studentInfo, { loaded: true }) } );
+        case 'CLEAR_STUDENT_INFO':
+            return Object.assign({}, state, { studentInfo: defaultState.studentInfo } );
         default:
             return state
     }

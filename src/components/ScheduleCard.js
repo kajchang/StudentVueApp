@@ -36,9 +36,9 @@ const ScheduleCard = props => {
             fetch('https://kajchang.github.io/LowellAPI/event_calendar.json')
                 .then(async res => {
                     props.setEventCalendar(await res.json());
+                });
 
-                    return fetch('https://kajchang.github.io/LowellAPI/bell_schedules.json');
-                })
+            fetch('https://kajchang.github.io/LowellAPI/bell_schedules.json')
                 .then(async res => {
                     props.setBellSchedule(await res.json());
                 });
@@ -47,7 +47,7 @@ const ScheduleCard = props => {
         }
     });
 
-    if (props.bellSchedule.loaded && scheduleMessage === '') {
+    if (props.bellSchedule.loaded && props.eventCalendar.loaded && scheduleMessage === '') {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
@@ -69,18 +69,33 @@ const ScheduleCard = props => {
             if (minutes < blocks[0].startMinutes) {
                 setScheduleMessage(`School starts at ${ props.bellSchedule[scheduleType][blocks[0].block]['Start Time'] } Today!`);
             } else if (minutes > blocks[blocks.length - 1].endMinutes) {
-                setScheduleMessage(`School is out for the day!`);
+                const tomorrow = new Date()
+                    .setDate(today.getDate() + 1);
+                let tomorrowMessage;
+
+                const code = props.eventCalendar[monthNames[tomorrow.getMonth()].toUpperCase()]['days'][String(today.getDate())];
+
+                if (code === 'M' || code === 'N') {
+                    const scheduleType = code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
+                    tomorrowMessage = `School starts at ${ props.bellSchedule[scheduleType]['1']['Start Time'] } tomorrow.`;
+                } else {
+                    tomorrowMessage = `Tomorrow is a ${ code } day!`
+                }
+
+                setScheduleMessage(`School is out for the day! ${ tomorrowMessage }.`);
             } else {
                 for (const [idx, block] of blocks.entries()) {
                     if (minutes > block.startMinutes && minutes < block.endMinutes) {
-                        setScheduleMessage(`Current Class is Period ${ block.block } which ends at ${ this.props.bellSchedule[scheduleType][block.block]['End Time'] }.`);
+                        setScheduleMessage(`Current Class is Period ${ block.block } which ends at ${ props.bellSchedule[scheduleType][block.block]['End Time'] }.`);
                         break;
                     } else if (minutes > block.endMinutes && minutes < blocks[idx + 1].startMinutes) {
-                        setScheduleMessage(`Next Class is Period ${blocks[idx + 1].block} which starts at ${this.props.bellSchedule[scheduleType][blocks[idx + 1].block]['End Time']}.`);
+                        setScheduleMessage(`Next Class is Period ${blocks[idx + 1].block} which starts at ${ props.bellSchedule[scheduleType][blocks[idx + 1].block]['Start Time'] }.`);
                         break;
                     }
                 }
             }
+        } else {
+            setScheduleMessage(`Today is a ${ code } day!`)
         }
     }
 

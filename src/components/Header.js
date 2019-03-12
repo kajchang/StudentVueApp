@@ -1,15 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Text, TouchableHighlight } from 'react-native';
 import { Header } from 'react-native-elements';
 
-const Header_ = ({ name, navigation, back }) => <Header
+import { clearStudentInfo } from '../actions';
+
+const Header_ = ({ name, navigation, back, clearStudentInfo }) => <Header
     containerStyle={{
         backgroundColor: '#29a4a4',
         justifyContent: 'space-around'
     }}
     leftComponent={ back ? <TouchableHighlight
         underlayColor={ '#29a4a4' }
-        onPress={ () => navigation.replace(back) }
+        onPress={ () => {
+            clearStudentInfo();
+            navigation.replace(back);
+        } }
     >
         <Text
             style={ { fontSize: 20, color: '#fff' } }
@@ -26,4 +32,8 @@ const Header_ = ({ name, navigation, back }) => <Header
     </TouchableHighlight> }
 />;
 
-export default Header_;
+const mapDispatchToProps = dispatch => ({
+    clearStudentInfo: () => dispatch(clearStudentInfo())
+});
+
+export default connect(null, mapDispatchToProps)(Header_);
