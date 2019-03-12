@@ -3,9 +3,9 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducer from './src/reducers';
+import reducer from './reducers';
 
-import { LoginView, LandingView, BarcodeView } from './src/views';
+import { LoginView, LandingView, BarcodeView } from './views';
 
 const store = createStore(reducer);
 

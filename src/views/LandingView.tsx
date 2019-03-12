@@ -1,10 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux'
+import { NavigationScreenProp } from 'react-navigation';
 
 import { Header, Menu, ScheduleCard } from '../components';
 
-const LandingView = props => <View>
+import { StateInterface } from '../reducers';
+import { StudentInfoInterface } from '../actions';
+
+interface LandingViewProps {
+    navigation: NavigationScreenProp<any, any>;
+    studentInfo: StudentInfoInterface;
+}
+
+const LandingView = (props: LandingViewProps) => <View>
     <Header
         name={ props.studentInfo.name }
         navigation={ props.navigation }
@@ -34,7 +43,7 @@ const LandingView = props => <View>
     />
 </View>;
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StateInterface) => ({
     studentInfo: state.studentInfo
 });
 

@@ -1,30 +1,39 @@
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Text, TouchableHighlight } from 'react-native';
 import { Header } from 'react-native-elements';
 
-import { clearStudentInfo } from '../actions';
+import { ActionInterface, clearStudentInfo } from '../actions';
 
-const Header_ = ({ name, navigation, back, clearStudentInfo }) => <Header
+import { NavigationScreenProp } from 'react-navigation';
+
+interface HeaderProps {
+    navigation: NavigationScreenProp<any, any>;
+    name: string;
+    back?: string;
+    clearStudentInfo: () => void;
+}
+
+const Header_ = (props: HeaderProps) => <Header
     containerStyle={{
         backgroundColor: '#29a4a4',
         justifyContent: 'space-around'
     }}
-    leftComponent={ back ? <TouchableHighlight
+    leftComponent={ props.back ? <TouchableHighlight
         underlayColor={ '#29a4a4' }
         onPress={ () => {
             clearStudentInfo();
-            navigation.replace(back);
+            props.navigation.replace(props.back as string);
         } }
     >
         <Text
             style={ { fontSize: 20, color: '#fff' } }
         >Back</Text>
-    </TouchableHighlight> : null }
-    centerComponent={ { text: name, style: { fontSize: 20, color: '#fff' } } }
+    </TouchableHighlight> : undefined }
+    centerComponent={ { text: props.name, style: { fontSize: 20, color: '#fff' } } }
     rightComponent={ <TouchableHighlight
         underlayColor={ '#29a4a4' }
-        onPress={ () => navigation.replace('Login') }
+        onPress={ () => props.navigation.replace('Login') }
     >
         <Text
             style={ { fontSize: 20, color: '#fff' } }
@@ -32,7 +41,7 @@ const Header_ = ({ name, navigation, back, clearStudentInfo }) => <Header
     </TouchableHighlight> }
 />;
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: (arg0: ActionInterface) => null) => ({
     clearStudentInfo: () => dispatch(clearStudentInfo())
 });
 

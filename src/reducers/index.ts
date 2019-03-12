@@ -1,4 +1,13 @@
-const defaultState = {
+import { ActionInterface, BellScheduleInterface, EventCalendarInterface, StudentInfoInterface } from '../actions';
+
+export interface StateInterface {
+    cookies: string;
+    bellSchedule: BellScheduleInterface;
+    eventCalendar: EventCalendarInterface;
+    studentInfo: StudentInfoInterface;
+}
+
+const defaultState: StateInterface = {
     cookies: '',
     bellSchedule: {
         loaded: false
@@ -13,7 +22,7 @@ const defaultState = {
     }
 };
 
-export default (state = defaultState, action) => {
+export default (state: StateInterface = defaultState, action: ActionInterface) => {
     switch (action.type) {
         case 'SET_COOKIES':
             return Object.assign({}, state, { cookies: action.data || state.cookies } );

@@ -1,6 +1,11 @@
 import { AsyncStorage } from 'react-native';
 
-const setCredentials = (username, password) => {
+export interface Credentials {
+    username: string;
+    password: string;
+}
+
+const setCredentials = (username: string, password: string) => {
     AsyncStorage.setItem('@StudentVue:credentials', JSON.stringify({
         username: username,
         password: password

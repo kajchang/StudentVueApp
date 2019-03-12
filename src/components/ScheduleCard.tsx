@@ -1,22 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import * as React from 'react'
 import { Text, TouchableHighlight } from 'react-native';
 import { Card, Divider } from 'react-native-elements';
 import { connect } from 'react-redux'
 
-import { setBellSchedule, setEventCalendar, setStudentInfo } from '../actions'
-
+// @ts-ignore
 import cheerio from 'react-native-cheerio';
 
-const parseTime = time => {
+import { setBellSchedule, setEventCalendar, setStudentInfo } from '../actions';
+
+import  { NavigationScreenProp } from 'react-navigation';
+import { BellScheduleInterface, EventCalendarInterface, StudentInfoInterface } from '../actions';
+
+
+interface ScheduleCardProps {
+    navigation: NavigationScreenProp<any, any>;
+    cookies: string;
+    bellSchedule: BellScheduleInterface;
+    eventCalendar: EventCalendarInterface;
+    studentInfo: StudentInfoInterface;
+    setBellSchedule: (arg0: BellScheduleInterface) => null;
+    setEventCalendar: (arg0: EventCalendarInterface) => null;
+    setStudentInfo: (arg0: StudentInfoInterface) => null;
+}
+
+const parseTime = (time: string) => {
     const parsedTime =  /([0-9]{1,2}):([0-9]{1,2}) ([AP])M/.exec(time);
+    // @ts-ignore
     return parseInt(parsedTime[1]) * 60 + parseInt(parsedTime[2]) + (parseInt(parsedTime[1]) !== 12 && parsedTime[3] === 'P' ? 12 * 60 : 0);
 };
 
-const ScheduleCard = props => {
-    const [scheduleMessage, setScheduleMessage] = useState('');
-    const [initialized, setInitialized] = useState(props.bellSchedule.loaded && props.eventCalendar.loaded && props.studentInfo.loaded);
+const ScheduleCard = (props: ScheduleCardProps) => {
+    const [scheduleMessage, setScheduleMessage] = React.useState('');
+    const [initialized, setInitialized] = React.useState(props.bellSchedule.loaded && props.eventCalendar.loaded && props.studentInfo.loaded);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!initialized) {
             fetch('https://portal.sfusd.edu/Home_PXP2.aspx', {
                 method: 'GET',
@@ -30,7 +47,7 @@ const ScheduleCard = props => {
                     props.setStudentInfo({
                         name: /Good [a-zA-z]+, (.+), [0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/g.exec($('#Greeting').text())[1],
                         studentID: /ID: ([0-9]{8})/.exec($('.student-id').text())[1]
-                    });
+                    } as StudentInfoInterface);
                 });
 
             fetch('https://kajchang.github.io/LowellAPI/event_calendar.json')
@@ -55,11 +72,13 @@ const ScheduleCard = props => {
         const today = new Date;
         const minutes = today.getHours() * 60 + today.getMinutes();
 
+        // @ts-ignore
         const code = props.eventCalendar[monthNames[today.getMonth()].toUpperCase()]['days'][String(today.getDate())];
 
         if (code === 'M' || code === 'N') {
             const scheduleType = code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
 
+            // @ts-ignore
             const blocks = Object.keys(props.bellSchedule[scheduleType]).map(block => ({
                 block,
                 startMinutes: parseTime(props.bellSchedule[scheduleType][block]['Start Time']),
@@ -69,8 +88,9 @@ const ScheduleCard = props => {
             if (minutes < blocks[0].startMinutes) {
                 setScheduleMessage(`School starts at ${ props.bellSchedule[scheduleType][blocks[0].block]['Start Time'] } Today!`);
             } else if (minutes > blocks[blocks.length - 1].endMinutes) {
-                const tomorrow = new Date()
-                    .setDate(today.getDate() + 1);
+                const tomorrow = new Date();
+                tomorrow.setDate(today.getDate() + 1);
+
                 let tomorrowMessage;
 
                 const code = props.eventCalendar[monthNames[tomorrow.getMonth()].toUpperCase()]['days'][String(today.getDate())];
@@ -82,8 +102,9 @@ const ScheduleCard = props => {
                     tomorrowMessage = `Tomorrow is a ${ code } day!`
                 }
 
-                setScheduleMessage(`School is out for the day! ${ tomorrowMessage }.`);
+                setScheduleMessage(`School is out for the day! ${ tomorrowMessage }`);
             } else {
+                // @ts-ignore
                 for (const [idx, block] of blocks.entries()) {
                     if (minutes > block.startMinutes && minutes < block.endMinutes) {
                         setScheduleMessage(`Current Class is Period ${ block.block } which ends at ${ props.bellSchedule[scheduleType][block.block]['End Time'] }.`);

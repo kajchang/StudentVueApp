@@ -1,10 +1,22 @@
-import React from 'react';
+import * as React from 'react';
 import { FlatList, TouchableHighlight } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-const Menu = ({ pages }) => <FlatList
+interface Page {
+    title: string;
+    icon: {
+        name: string,
+        size: number
+    };
+}
+
+interface MenuProps {
+    pages: Page[];
+}
+
+const Menu = (props: MenuProps) => <FlatList
     scrollEnabled={ false }
-    data={ pages }
+    data={ props.pages }
     renderItem={ ({ item }) => <TouchableHighlight
         onPress={ () => {} }
         underlayColor={ '#29a4a4' }

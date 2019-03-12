@@ -1,22 +1,35 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import * as React from 'react';
 import { Text, TextInput, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 
-import { setCookies } from '../actions';
+import { ActionInterface, setCookies } from '../actions';
 import styles from '../styles';
 import storage from '../storage/CredentialStorage';
 
+// @ts-ignore
 import cheerio from 'react-native-cheerio';
+// @ts-ignore
 import RCTNetworking from 'RCTNetworking';
 
-const Login = props => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+import { NavigationScreenProp } from 'react-navigation';
 
-    const [initialized, setInitialized] = useState(false);
+interface LoginProps {
+    navigation: NavigationScreenProp<any, any>;
+    setCookies: (arg0: string) => null;
+}
 
-    useEffect(() => {
+interface Parameters {
+    [value: string]: string
+}
+
+const Login = (props: LoginProps) => {
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [error, setError] = React.useState('');
+
+    const [initialized, setInitialized] = React.useState(false);
+
+    React.useEffect(() => {
         if (!initialized) {
             storage.getCredentials()
                 .then(credentials => {
@@ -37,8 +50,9 @@ const Login = props => {
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
             .then(async res => {
                 const $ = cheerio.load(await res.text());
-                const params = {};
+                const params: Parameters = {};
                 $('#aspnetForm > input').each(function () {
+                    // @ts-ignore
                     params[$(this).attr('name')] = $(this).attr('value');
                 });
                 params['ctl00$MainContent$username'] = username;
@@ -51,8 +65,9 @@ const Login = props => {
                     formBody.push(encodedKey + '=' + encodedValue);
                 }
 
-                props.setCookies(res.headers.get('set-cookie'));
+                props.setCookies(res.headers.get('set-cookie') as string);
 
+                // @ts-ignore
                 return fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?Logout=1&regenerateSessionId=True', {
                     method: 'POST',
                     headers: {
@@ -75,7 +90,7 @@ const Login = props => {
 
 
     return (
-        <Fragment>
+        <React.Fragment>
             <TextInput
                 style={ [styles.bordered, styles.textCentered] }
                 placeholder='Username'
@@ -84,7 +99,6 @@ const Login = props => {
             />
             <TextInput
                 style={ [styles.bordered, styles.textCentered] }
-                autoComplete='password'
                 secureTextEntry={ true }
                 placeholder='Password'
                 value={ password }
@@ -100,12 +114,12 @@ const Login = props => {
                 >Submit</Text>
             </TouchableHighlight>
             <Text style={ [styles.slightlyPadded, { color: '#ff0000' }] }>{ error }</Text>
-        </Fragment>
+        </React.Fragment>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    setCookies: cookies => dispatch(setCookies(cookies))
+const mapDispatchToProps = (dispatch: (arg0: ActionInterface) => null) => ({
+    setCookies: (cookies: string) => dispatch(setCookies(cookies))
 });
 
 export default connect(null, mapDispatchToProps)(Login);

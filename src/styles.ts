@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
     header: {
         fontSize: 36,
         padding: 25
@@ -27,3 +27,5 @@ export default styles = StyleSheet.create({
         paddingBottom: 15
     }
 });
+
+export default styles;
