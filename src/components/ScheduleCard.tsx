@@ -31,7 +31,7 @@ const parseTime = (time: string) => {
 
 const ScheduleCard = (props: ScheduleCardProps) => {
     const [scheduleMessage, setScheduleMessage] = React.useState('');
-    const [initialized, setInitialized] = React.useState(props.bellSchedule.loaded && props.eventCalendar.loaded && props.studentInfo.loaded);
+    const [initialized, setInitialized] = React.useState(false);
 
     React.useEffect(() => {
         if (!initialized) {
@@ -72,32 +72,30 @@ const ScheduleCard = (props: ScheduleCardProps) => {
         const today = new Date;
         const minutes = today.getHours() * 60 + today.getMinutes();
 
-        // @ts-ignore
-        const code = props.eventCalendar[monthNames[today.getMonth()].toUpperCase()]['days'][String(today.getDate())];
+        const code = props.eventCalendar.data[monthNames[today.getMonth()].toUpperCase()]['days'][String(today.getDate())];
 
         if (code === 'M' || code === 'N') {
             const scheduleType = code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
 
-            // @ts-ignore
-            const blocks = Object.keys(props.bellSchedule[scheduleType]).map(block => ({
+            const blocks = Object.keys(props.bellSchedule.data[scheduleType]).map(block => ({
                 block,
-                startMinutes: parseTime(props.bellSchedule[scheduleType][block]['Start Time']),
-                endMinutes: parseTime(props.bellSchedule[scheduleType][block]['End Time'])
+                startMinutes: parseTime(props.bellSchedule.data[scheduleType][block]['Start Time']),
+                endMinutes: parseTime(props.bellSchedule.data[scheduleType][block]['End Time'])
             })).sort((a, b) => a['startMinutes'] - b['startMinutes']);
 
             if (minutes < blocks[0].startMinutes) {
-                setScheduleMessage(`School starts at ${ props.bellSchedule[scheduleType][blocks[0].block]['Start Time'] } Today!`);
+                setScheduleMessage(`School starts at ${ props.bellSchedule.data[scheduleType][blocks[0].block]['Start Time'] } Today!`);
             } else if (minutes > blocks[blocks.length - 1].endMinutes) {
                 const tomorrow = new Date();
                 tomorrow.setDate(today.getDate() + 1);
 
                 let tomorrowMessage;
 
-                const code = props.eventCalendar[monthNames[tomorrow.getMonth()].toUpperCase()]['days'][String(today.getDate())];
+                const code = props.eventCalendar.data[monthNames[tomorrow.getMonth()].toUpperCase()]['days'][String(today.getDate())];
 
                 if (code === 'M' || code === 'N') {
                     const scheduleType = code === 'M' ? 'Monday Meeting' : 'Tuesday - Friday';
-                    tomorrowMessage = `School starts at ${ props.bellSchedule[scheduleType]['1']['Start Time'] } tomorrow.`;
+                    tomorrowMessage = `School starts at ${ props.bellSchedule.data[scheduleType]['1']['Start Time'] } tomorrow.`;
                 } else {
                     tomorrowMessage = `Tomorrow is a ${ code } day!`
                 }

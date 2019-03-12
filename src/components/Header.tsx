@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Text, TouchableHighlight } from 'react-native';
 import { Header } from 'react-native-elements';
 
-import { ActionInterface, clearStudentInfo } from '../actions';
+import { ActionInterface, clearStudentInfo} from '../actions';
 
 import { NavigationScreenProp } from 'react-navigation';
 
@@ -21,10 +21,7 @@ const Header_ = (props: HeaderProps) => <Header
     }}
     leftComponent={ props.back ? <TouchableHighlight
         underlayColor={ '#29a4a4' }
-        onPress={ () => {
-            clearStudentInfo();
-            props.navigation.replace(props.back as string);
-        } }
+        onPress={ () => props.navigation.replace(props.back as string) }
     >
         <Text
             style={ { fontSize: 20, color: '#fff' } }
@@ -33,7 +30,10 @@ const Header_ = (props: HeaderProps) => <Header
     centerComponent={ { text: props.name, style: { fontSize: 20, color: '#fff' } } }
     rightComponent={ <TouchableHighlight
         underlayColor={ '#29a4a4' }
-        onPress={ () => props.navigation.replace('Login') }
+        onPress={ () => {
+            props.clearStudentInfo();
+            props.navigation.replace('Login');
+        } }
     >
         <Text
             style={ { fontSize: 20, color: '#fff' } }

@@ -4,17 +4,23 @@ export interface ActionInterface {
 }
 
 export interface BellScheduleInterface {
-    [scheduleType: string]: {
-        [className: string]: string
+    loaded: boolean;
+    data?: {
+        [scheduleType: string]: {
+            [className: string]: string
+        };
     };
 }
 
 export interface EventCalendarInterface {
-    [month: string]: {
-        days: {
-            [day: string]: string
+    loaded: boolean;
+    data?: {
+        [month: string]: {
+            days: {
+                [day: string]: string
+            };
+            events: string[];
         };
-        events: string[];
     };
 }
 
