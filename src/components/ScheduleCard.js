@@ -14,7 +14,7 @@ const parseTime = time => {
 
 const ScheduleCard = props => {
     const [scheduleMessage, setScheduleMessage] = useState('');
-    const [initialized, setInitialized] = useState(false);
+    const [initialized, setInitialized] = useState(props.bellSchedule.loaded && props.eventCalendar.loaded && props.studentInfo.loaded);
 
     useEffect(() => {
         if (!initialized) {
@@ -47,7 +47,7 @@ const ScheduleCard = props => {
         }
     });
 
-    if (Object.keys(props.bellSchedule).length > 0 && scheduleMessage === '') {
+    if (props.bellSchedule.loaded && scheduleMessage === '') {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Text, TextInput, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -9,29 +9,29 @@ import storage from '../storage/CredentialStorage';
 import cheerio from 'react-native-cheerio';
 import RCTNetworking from 'RCTNetworking';
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
+const Login = props => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-        this.state = {
-            username: '',
-            password: '',
-            error: ''
-        };
+    const [initialized, setInitialized] = useState(false);
 
-        this.login = this.login.bind(this);
-    }
+    useEffect(() => {
+        if (!initialized) {
+            storage.getCredentials()
+                .then(credentials => {
+                    if (credentials !== null) {
+                        setUsername(JSON.parse(credentials)['username']);
+                        setPassword(JSON.parse(credentials)['password']);
+                    }
+                });
 
-    componentDidMount() {
-        storage.getCredentials()
-            .then(credentials => {
-                if (credentials !== null) {
-                    this.setState(JSON.parse(credentials));
-                }
-            });
-    }
+            setInitialized(true);
+        }
+    });
 
-    login() {
+
+    const login = () => {
         RCTNetworking.clearCookies(() => {});
 
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
@@ -41,8 +41,8 @@ class Login extends React.Component {
                 $('#aspnetForm > input').each(function () {
                     params[$(this).attr('name')] = $(this).attr('value');
                 });
-                params['ctl00$MainContent$username'] = this.state.username;
-                params['ctl00$MainContent$password'] = this.state.password;
+                params['ctl00$MainContent$username'] = username;
+                params['ctl00$MainContent$password'] = password;
 
                 let formBody = [];
                 for (const property in params) {
@@ -51,7 +51,7 @@ class Login extends React.Component {
                     formBody.push(encodedKey + '=' + encodedValue);
                 }
 
-                this.props.setCookies(res.headers.get('set-cookie'));
+                props.setCookies(res.headers.get('set-cookie'));
 
                 return fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?Logout=1&regenerateSessionId=True', {
                     method: 'POST',
@@ -66,44 +66,43 @@ class Login extends React.Component {
                 if (res.url !== 'https://portal.sfusd.edu/Home_PXP2.aspx') {
                     throw 'Incorrect Username or Password';
                 } else {
-                    storage.setCredentials(this.state.username, this.state.password);
-                    this.props.navigation.replace('Landing');
+                    storage.setCredentials(username, password);
+                    props.navigation.replace('Landing');
                 }
             })
-            .catch(error => this.setState({ error }));
-    }
+            .catch(error => setError(error));
+    };
 
-    render() {
-        return (
-            <Fragment>
-                <TextInput
-                    style={ [styles.bordered, styles.textCentered] }
-                    placeholder='Username'
-                    value={ this.state.username }
-                    onChangeText={ (username) => this.setState({ username }) }
-                />
-                <TextInput
-                    style={ [styles.bordered, styles.textCentered] }
-                    autoComplete='password'
-                    secureTextEntry={ true }
-                    placeholder='Password'
-                    value={ this.state.password }
-                    onChangeText={ (password) => this.setState({ password }) }
-                />
-                <TouchableHighlight
-                    style={ [styles.bordered, { backgroundColor: '#a42929' }] }
-                    underlayColor={ '#8a0f0f' }
-                    onPress={ this.login }
-                >
-                    <Text
-                        style={ [styles.textCentered, styles.slightlyPadded] }
-                    >Submit</Text>
-                </TouchableHighlight>
-                <Text style={ [styles.slightlyPadded, { color: '#ff0000' }] }>{ this.state.error }</Text>
-            </Fragment>
-        );
-    }
-}
+
+    return (
+        <Fragment>
+            <TextInput
+                style={ [styles.bordered, styles.textCentered] }
+                placeholder='Username'
+                value={ username }
+                onChangeText={ setUsername }
+            />
+            <TextInput
+                style={ [styles.bordered, styles.textCentered] }
+                autoComplete='password'
+                secureTextEntry={ true }
+                placeholder='Password'
+                value={ password }
+                onChangeText={ setPassword }
+            />
+            <TouchableHighlight
+                style={ [styles.bordered, { backgroundColor: '#a42929' }] }
+                underlayColor={ '#8a0f0f' }
+                onPress={ login }
+            >
+                <Text
+                    style={ [styles.textCentered, styles.slightlyPadded] }
+                >Submit</Text>
+            </TouchableHighlight>
+            <Text style={ [styles.slightlyPadded, { color: '#ff0000' }] }>{ error }</Text>
+        </Fragment>
+    );
+};
 
 const mapDispatchToProps = dispatch => ({
     setCookies: cookies => dispatch(setCookies(cookies))
