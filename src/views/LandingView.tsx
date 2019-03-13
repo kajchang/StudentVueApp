@@ -15,7 +15,7 @@ interface ILandingViewProps {
 
 const LandingView = (props: ILandingViewProps) => <View>
     <Header
-        name={ props.studentInfo.name }
+        back={ false }
         navigation={ props.navigation }
     />
     <ScheduleCard
@@ -25,21 +25,26 @@ const LandingView = (props: ILandingViewProps) => <View>
         pages={ [
             {
                 icon: { name: 'message', size: 30 },
+                page: 'Messages',
                 title: 'Messages',
             },
             {
                 icon: { name: 'calendar', type: 'entypo', size: 30 },
+                page: 'Calendar',
                 title: 'Calendar',
             },
             {
                 icon: { name: 'notebook', type: 'simple-line-icon', size: 30 },
+                page: 'Attendance',
                 title: 'Attendance',
             },
             {
                 icon: { name: 'grade', size: 30 },
+                page: 'Grades',
                 title: 'Grades',
             },
         ] }
+        navigation={ props.navigation }
     />
 </View>;
 

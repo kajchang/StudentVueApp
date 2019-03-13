@@ -3,25 +3,29 @@ export interface IActionInterface {
     data?: any;
 }
 
+export interface IBellSchedule {
+    [scheduleType: string]: {
+        [className: string]: string,
+    };
+}
+
+export interface IEventCalendar {
+    [month: string]: {
+        days: {
+            [day: string]: string,
+        };
+        events: string[];
+    };
+}
+
 export interface IBellScheduleInterface {
     loaded: boolean;
-    data?: {
-        [scheduleType: string]: {
-            [className: string]: string,
-        };
-    };
+    data?: IBellSchedule;
 }
 
 export interface IEventCalendarInterface {
     loaded: boolean;
-    data?: {
-        [month: string]: {
-            days: {
-                [day: string]: string,
-            };
-            events: string[];
-        };
-    };
+    data?: IEventCalendar;
 }
 
 export interface IStudentInfoInterface {
@@ -35,12 +39,12 @@ export const setCookies = (cookies: string): IActionInterface => ({
     type: 'SET_COOKIES',
 });
 
-export const setBellSchedule = (bellSchedule: IBellScheduleInterface): IActionInterface => ({
+export const setBellSchedule = (bellSchedule: IBellSchedule): IActionInterface => ({
     data: bellSchedule,
     type: 'SET_BELL_SCHEDULE',
 });
 
-export const setEventCalendar = (eventCalendar: IEventCalendarInterface): IActionInterface => ({
+export const setEventCalendar = (eventCalendar: IEventCalendar): IActionInterface => ({
     data: eventCalendar,
     type: 'SET_EVENT_CALENDAR',
 });

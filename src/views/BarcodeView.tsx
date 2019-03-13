@@ -17,8 +17,7 @@ interface IBarcodeViewProps {
 
 const BarcodeView = (props: IBarcodeViewProps) => <View>
     <Header
-        name={ props.studentInfo.name }
-        back={ 'Landing' }
+        back={ true }
         navigation={ props.navigation }
     />
     <Barcode
