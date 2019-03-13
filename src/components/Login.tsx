@@ -2,27 +2,26 @@ import * as React from 'react';
 import { Text, TextInput, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 
-import { ActionInterface, setCookies } from '../actions';
+import { IActionInterface, setCookies } from '../actions';
+import CredentialStorage from '../storage/CredentialStorage';
 import styles from '../styles';
-import storage from '../storage/CredentialStorage';
 
 // @ts-ignore
-import cheerio from 'react-native-cheerio';
-// @ts-ignore
 import RCTNetworking from 'RCTNetworking';
+import { default as cheerio } from 'react-native-cheerio';
 
 import { NavigationScreenProp } from 'react-navigation';
 
-interface LoginProps {
+interface ILoginProps {
     navigation: NavigationScreenProp<any, any>;
     setCookies: (arg0: string) => null;
 }
 
-interface Parameters {
-    [value: string]: string
+interface IParameters {
+    [value: string]: string;
 }
 
-const Login = (props: LoginProps) => {
+const Login = (props: ILoginProps) => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [error, setError] = React.useState('');
@@ -31,11 +30,11 @@ const Login = (props: LoginProps) => {
 
     React.useEffect(() => {
         if (!initialized) {
-            storage.getCredentials()
-                .then(credentials => {
+            CredentialStorage.getCredentials()
+                .then((credentials) => {
                     if (credentials !== null) {
-                        setUsername(JSON.parse(credentials)['username']);
-                        setPassword(JSON.parse(credentials)['password']);
+                        setUsername(JSON.parse(credentials).username);
+                        setPassword(JSON.parse(credentials).password);
                     }
                 });
 
@@ -43,64 +42,60 @@ const Login = (props: LoginProps) => {
         }
     });
 
-
     const login = () => {
         RCTNetworking.clearCookies(() => {});
 
         fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?regenerateSessionId=True')
-            .then(async res => {
+            .then(async (res) => {
                 const $ = cheerio.load(await res.text());
-                const params: Parameters = {};
+                const params: IParameters = {};
                 $('#aspnetForm > input').each(function () {
-                    // @ts-ignore
                     params[$(this).attr('name')] = $(this).attr('value');
                 });
-                params['ctl00$MainContent$username'] = username;
-                params['ctl00$MainContent$password'] = password;
+                params.ctl00$MainContent$username = username;
+                params.ctl00$MainContent$password = password;
 
-                let formBody = [];
-                for (const property in params) {
+                const formBody = [];
+                for (const property of Object.keys(params)) {
                     const encodedKey = encodeURIComponent(property);
                     const encodedValue = encodeURIComponent(params[property]);
-                    formBody.push(encodedKey + '=' + encodedValue);
+                    formBody.push(`${ encodedKey }=${ encodedValue }`);
                 }
 
-                props.setCookies(res.headers.get('set-cookie') as string);
+                props.setCookies(res.headers.get('set-cookie'));
 
-                // @ts-ignore
                 return fetch('https://portal.sfusd.edu/PXP2_Login_Student.aspx?Logout=1&regenerateSessionId=True', {
-                    method: 'POST',
+                    body: formBody.join('&'),
                     headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
                         cookie: res.headers.get('set-cookie'),
-                        'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: formBody.join('&')
+                    method: 'POST',
                 });
             })
-            .then(res => {
+            .then((res) => {
                 if (res.url !== 'https://portal.sfusd.edu/Home_PXP2.aspx') {
-                    throw 'Incorrect Username or Password';
+                    throw new Error('Incorrect Username or Password');
                 } else {
-                    storage.setCredentials(username, password);
+                    CredentialStorage.setCredentials(username, password);
                     props.navigation.replace('Landing');
                 }
             })
-            .catch(error => setError(error));
+            .catch(errorMessage => setError(errorMessage));
     };
-
 
     return (
         <React.Fragment>
             <TextInput
                 style={ [styles.bordered, styles.textCentered] }
-                placeholder='Username'
+                placeholder={ 'Username' }
                 value={ username }
                 onChangeText={ setUsername }
             />
             <TextInput
                 style={ [styles.bordered, styles.textCentered] }
                 secureTextEntry={ true }
-                placeholder='Password'
+                placeholder={ 'Password' }
                 value={ password }
                 onChangeText={ setPassword }
             />
@@ -118,8 +113,8 @@ const Login = (props: LoginProps) => {
     );
 };
 
-const mapDispatchToProps = (dispatch: (arg0: ActionInterface) => null) => ({
-    setCookies: (cookies: string) => dispatch(setCookies(cookies))
+const mapDispatchToProps = (dispatch: (arg0: IActionInterface) => null) => ({
+    setCookies: (cookies: string) => dispatch(setCookies(cookies)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);

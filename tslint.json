@@ -4,7 +4,10 @@
     "tslint-config-airbnb"
   ],
   "rules": {
-    "no-any": true,
+    "max-line-length": [true, 120],
+    "ter-indent": [true, 4],
+    "indent": [true, "spaces", 4],
+    "no-empty": false,
     "prefer-array-literal": [true, { "allow-type-parameters": true }],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case", "allow-leading-underscore"]
   }

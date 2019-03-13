@@ -4,20 +4,21 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "test": "npm run tslint && npm run jest",
+    "tslint": "tslint --project .",
+    "jest": "jest"
   },
   "dependencies": {
     "expo": "^32.0.0",
-    "react": "16.7.0-alpha.0",
+    "react": "16.7.0-alpha.2",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31-with-hooks-dangerzone.tar.gz",
     "react-native-barcode-builder": "^1.0.5",
     "react-native-cheerio": "^1.0.0-rc.4",
-    "react-native-cookies": "^3.3.0",
     "react-native-elements": "^1.1.0",
     "react-navigation": "^3.3.2",
     "react-redux": "^6.0.1",
-    "redux": "^4.0.1",
-    "schedule": "0.4.0"
+    "redux": "^4.0.1"
   },
   "devDependencies": {
     "@types/expo": "^32.0.7",
@@ -25,11 +26,11 @@
     "@types/react": "^16.8.7",
     "@types/react-navigation": "^3.0.5",
     "@types/react-redux": "^7.0.3",
-    "@types/react-test-renderer": "^16.8.1",
+    "@types/react-test-renderer": "16.8.0",
     "@types/redux": "^3.6.0",
     "jest": "^24.5.0",
     "jest-expo": "^32.0.0",
-    "react-test-renderer": "^16.8.4",
+    "react-test-renderer": "16.7.0-alpha.2",
     "ts-jest": "^24.0.0",
     "tslint": "^5.13.1",
     "tslint-config-airbnb": "^5.11.1",
@@ -42,8 +43,10 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testMatch": [
-      "**/__tests__/**/*.ts?(x)",
       "**/?(*.)+(spec|test).ts?(x)"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jsbarcode|react-native(.?)+|@?react-navigation(.?)+)/)"
     ],
     "moduleFileExtensions": [
       "js",

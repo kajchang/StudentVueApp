@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { View } from 'react-native';
-// @ts-ignore
-import Barcode from 'react-native-barcode-builder';
+
+import { default as Barcode } from 'react-native-barcode-builder';
 import { connect } from 'react-redux';
 
 import { Header } from '../components';
 
 import { NavigationScreenProp } from 'react-navigation';
-import { StateInterface } from '../reducers';
-import { StudentInfoInterface } from '../actions';
+import { IStudentInfoInterface } from '../actions';
+import { IStateInterface } from '../reducers';
 
-interface BarcodeViewProps {
+interface IBarcodeViewProps {
     navigation: NavigationScreenProp<any, any>;
-    studentInfo: StudentInfoInterface;
+    studentInfo: IStudentInfoInterface;
 }
 
-const BarcodeView = (props: BarcodeViewProps) => <View>
+const BarcodeView = (props: IBarcodeViewProps) => <View>
     <Header
         name={ props.studentInfo.name }
         back={ 'Landing' }
@@ -26,8 +26,8 @@ const BarcodeView = (props: BarcodeViewProps) => <View>
     />
 </View>;
 
-const mapStateToProps = (state: StateInterface) => ({
-    studentInfo: state.studentInfo
+const mapStateToProps = (state: IStateInterface) => ({
+    studentInfo: state.studentInfo,
 });
 
 export default connect(mapStateToProps)(BarcodeView);

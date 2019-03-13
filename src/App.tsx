@@ -1,21 +1,21 @@
-import React from 'react';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import * as React from 'react';
+import { createAppContainer, createStackNavigator } from 'react-navigation';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducer from './reducers';
+import reducers from './reducers';
 
-import { LoginView, LandingView, BarcodeView } from './views';
+import { BarcodeView, LandingView, LoginView } from './views';
 
-const store = createStore(reducer);
+const store = createStore(reducers);
 
 const MainNavigator = createStackNavigator({
-    Login: { screen: LoginView },
+    Barcode: { screen: BarcodeView },
     Landing: { screen: LandingView },
-    Barcode: { screen: BarcodeView }
-}, {
+    Login: { screen: LoginView },
+},                                         {
+    headerMode: 'none',
     initialRouteName: 'Login',
-    headerMode: 'none'
 });
 
 const AppContainer = createAppContainer(MainNavigator);

@@ -7,11 +7,11 @@ import styles from '../styles';
 
 import { Login } from '../components';
 
-interface LoginViewProps {
-    navigation: NavigationScreenProp<any, any>
+interface ILoginViewProps {
+    navigation: NavigationScreenProp<any, any>;
 }
 
-const LoginView = (props: LoginViewProps) => <KeyboardAvoidingView style={ styles.container } behavior='padding'>
+const LoginView = (props: ILoginViewProps) => <KeyboardAvoidingView style={ styles.container } behavior="padding">
     <Text style={ styles.header }>StudentVue</Text>
     <Login
         navigation={ props.navigation }

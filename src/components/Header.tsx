@@ -1,23 +1,23 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Text, TouchableHighlight } from 'react-native';
 import { Header } from 'react-native-elements';
+import { connect } from 'react-redux';
 
-import { ActionInterface, clearStudentInfo} from '../actions';
+import { clearStudentInfo, IActionInterface } from '../actions';
 
 import { NavigationScreenProp } from 'react-navigation';
 
-interface HeaderProps {
+interface IHeaderProps {
     navigation: NavigationScreenProp<any, any>;
     name: string;
     back?: string;
     clearStudentInfo: () => void;
 }
 
-const Header_ = (props: HeaderProps) => <Header
+const _Header = (props: IHeaderProps) => <Header
     containerStyle={{
         backgroundColor: '#29a4a4',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
     }}
     leftComponent={ props.back ? <TouchableHighlight
         underlayColor={ '#29a4a4' }
@@ -41,8 +41,8 @@ const Header_ = (props: HeaderProps) => <Header
     </TouchableHighlight> }
 />;
 
-const mapDispatchToProps = (dispatch: (arg0: ActionInterface) => null) => ({
-    clearStudentInfo: () => dispatch(clearStudentInfo())
+const mapDispatchToProps = (dispatch: (arg0: IActionInterface) => null) => ({
+    clearStudentInfo: () => dispatch(clearStudentInfo()),
 });
 
-export default connect(null, mapDispatchToProps)(Header_);
+export default connect(null, mapDispatchToProps)(_Header);

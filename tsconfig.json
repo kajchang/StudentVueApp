@@ -7,8 +7,9 @@
     "strict": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "downlevelIteration": true,
     "types": [
       "jest"
-    ],
+    ]
   }
 }

@@ -1,55 +1,55 @@
-export interface ActionInterface {
+export interface IActionInterface {
     type: string;
     data?: any;
 }
 
-export interface BellScheduleInterface {
+export interface IBellScheduleInterface {
     loaded: boolean;
     data?: {
         [scheduleType: string]: {
-            [className: string]: string
+            [className: string]: string,
         };
     };
 }
 
-export interface EventCalendarInterface {
+export interface IEventCalendarInterface {
     loaded: boolean;
     data?: {
         [month: string]: {
             days: {
-                [day: string]: string
+                [day: string]: string,
             };
             events: string[];
         };
     };
 }
 
-export interface StudentInfoInterface {
-    name: string,
+export interface IStudentInfoInterface {
+    name: string;
     studentID: string;
     loaded: boolean;
 }
 
-export const setCookies = (cookies: string): ActionInterface => ({
+export const setCookies = (cookies: string): IActionInterface => ({
+    data: cookies,
     type: 'SET_COOKIES',
-    data: cookies
 });
 
-export const setBellSchedule = (bellSchedule: BellScheduleInterface): ActionInterface => ({
+export const setBellSchedule = (bellSchedule: IBellScheduleInterface): IActionInterface => ({
+    data: bellSchedule,
     type: 'SET_BELL_SCHEDULE',
-    data: bellSchedule
 });
 
-export const setEventCalendar = (eventCalendar: EventCalendarInterface): ActionInterface => ({
+export const setEventCalendar = (eventCalendar: IEventCalendarInterface): IActionInterface => ({
+    data: eventCalendar,
     type: 'SET_EVENT_CALENDAR',
-    data: eventCalendar
 });
 
-export const setStudentInfo = (studentInfo: StudentInfoInterface): ActionInterface => ({
+export const setStudentInfo = (studentInfo: IStudentInfoInterface): IActionInterface => ({
+    data: studentInfo,
     type: 'SET_STUDENT_INFO',
-    data: studentInfo
 });
 
-export const clearStudentInfo = (): ActionInterface => ({
-   type: 'CLEAR_STUDENT_INFO'
+export const clearStudentInfo = (): IActionInterface => ({
+    type: 'CLEAR_STUDENT_INFO',
 });

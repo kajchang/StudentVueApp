@@ -1,0 +1,5 @@
+language: node
+
+install: yarn
+
+script: yarn test
