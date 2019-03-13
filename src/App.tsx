@@ -6,13 +6,13 @@ import { createStore } from 'redux';
 import reducers from './reducers';
 
 import {
-    LoginView,
-    LandingView,
-    BarcodeView,
     AttendanceView,
+    BarcodeView,
     CalendarView,
     GradesView,
-    MessagesView
+    LandingView,
+    LoginView,
+    MessagesView,
 } from './views';
 
 const store = createStore(reducers);

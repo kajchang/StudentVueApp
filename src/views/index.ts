@@ -8,11 +8,11 @@ import GradesView from './GradesView';
 import MessagesView from './MessagesView';
 
 export {
-    LoginView,
-    LandingView,
-    BarcodeView,
     AttendanceView,
+    BarcodeView,
     CalendarView,
     GradesView,
-    MessagesView
+    LandingView,
+    LoginView,
+    MessagesView,
 };
