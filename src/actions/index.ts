@@ -9,6 +9,18 @@ export interface IBellSchedule {
     };
 }
 
+export interface IClass {
+    className: string;
+    id: string;
+    period: number;
+    roomName: string;
+    teacher: {
+        email: string,
+        name: string,
+        sgu: string;
+    };
+}
+
 export interface IEventCalendar {
     [month: string]: {
         days: {
@@ -34,6 +46,11 @@ export interface IStudentInfoInterface {
     loaded: boolean;
 }
 
+export interface IClassInterface {
+    loaded: boolean;
+    data?: IClass[];
+}
+
 export const setCookies = (cookies: string): IActionInterface => ({
     data: cookies,
     type: 'SET_COOKIES',
@@ -56,4 +73,9 @@ export const setStudentInfo = (studentInfo: IStudentInfoInterface): IActionInter
 
 export const clearStudentInfo = (): IActionInterface => ({
     type: 'CLEAR_STUDENT_INFO',
+});
+
+export const setClasses = (classes: IClass[]): IActionInterface => ({
+    data: classes,
+    type: 'SET_CLASSES',
 });

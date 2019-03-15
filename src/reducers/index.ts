@@ -1,19 +1,24 @@
 import {
     IActionInterface,
     IBellScheduleInterface,
+    IClassInterface,
     IEventCalendarInterface,
     IStudentInfoInterface,
 } from '../actions';
 
 export interface IStateInterface {
-    cookies: string;
     bellSchedule: IBellScheduleInterface;
+    classes: IClassInterface;
+    cookies: string;
     eventCalendar: IEventCalendarInterface;
     studentInfo: IStudentInfoInterface;
 }
 
 const defaultState: IStateInterface = {
     bellSchedule: {
+        loaded: false,
+    },
+    classes: {
         loaded: false,
     },
     cookies: '',
@@ -30,22 +35,47 @@ const defaultState: IStateInterface = {
 export default (state: IStateInterface = defaultState, action: IActionInterface) => {
     switch (action.type) {
     case 'SET_COOKIES':
-        return Object.assign({}, state, { cookies: action.data || state.cookies });
+        return {
+            ...state,
+            cookies: action.data || state.cookies,
+        };
     case 'SET_BELL_SCHEDULE':
-        return Object.assign({}, state, {
-            bellSchedule: Object.assign({
+        return {
+            ...state,
+            bellSchedule: {
                 data: action.data || state.bellSchedule,
-            },                          { loaded: true }) });
+                loaded: true,
+            },
+        };
     case 'SET_EVENT_CALENDAR':
-        return Object.assign({}, state, {
-            eventCalendar: Object.assign({
+        return {
+            ...state,
+            eventCalendar: {
                 data: action.data || state.eventCalendar,
-            },                           { loaded: true }) });
+                loaded: true,
+            },
+        };
     case 'SET_STUDENT_INFO':
-        return Object.assign({}, state, {
-            studentInfo: Object.assign(action.data || state.studentInfo, { loaded: true }) });
+        return {
+            ...state,
+            studentInfo: {
+                ...(action.data || state.studentInfo),
+                loaded: true,
+            },
+        };
     case 'CLEAR_STUDENT_INFO':
-        return Object.assign({}, state, { studentInfo: defaultState.studentInfo });
+        return {
+            ...state,
+            studentInfo: defaultState.studentInfo,
+        };
+    case 'SET_CLASSES':
+        return {
+            ...state,
+            classes: {
+                data: action.data || state.classes,
+                loaded: true,
+            },
+        };
     default:
         return state;
     }

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 
 import { Header } from '../components';
+import styles from '../styles';
 
 import { NavigationScreenProp } from 'react-navigation';
 
@@ -9,12 +10,14 @@ interface IAttendanceViewProps {
     navigation: NavigationScreenProp<any, any>;
 }
 
-const GradesView = (props: IAttendanceViewProps) => <View>
+const GradesView = (props: IAttendanceViewProps) => <React.Fragment>
     <Header
         back={ true }
         navigation={ props.navigation }
     />
-    <Text>This is the Grades page.</Text>
-</View>;
+    <View style={ styles.container }>
+        <Text>This is the Grades page.</Text>
+    </View>
+</React.Fragment>;
 
 export default GradesView;
