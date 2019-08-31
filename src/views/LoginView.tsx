@@ -12,7 +12,7 @@ interface ILoginViewProps {
 }
 
 const LoginView = (props: ILoginViewProps) => <KeyboardAvoidingView style={ styles.container } behavior="padding">
-    <Text style={ styles.header }>StudentVue</Text>
+    <Text style={ [styles.header, styles.control] }>StudentVue</Text>
     <Login
         navigation={ props.navigation }
     />

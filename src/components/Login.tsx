@@ -81,34 +81,34 @@ const Login = (props: ILoginProps) => {
                     props.navigation.replace('Landing');
                 }
             })
-            .catch(errorMessage => setError(errorMessage));
+            .catch(loginError => setError(loginError.toString()));
     };
 
     return (
         <React.Fragment>
             <TextInput
-                style={ [styles.bordered, styles.textCentered] }
+                style={ [styles.bordered, styles.item, styles.textCentered] }
                 placeholder={ 'Username' }
                 value={ username }
                 onChangeText={ setUsername }
             />
             <TextInput
-                style={ [styles.bordered, styles.textCentered] }
+                style={ [styles.bordered, styles.item, styles.textCentered] }
                 secureTextEntry={ true }
                 placeholder={ 'Password' }
                 value={ password }
                 onChangeText={ setPassword }
             />
             <TouchableHighlight
-                style={ [styles.bordered, { backgroundColor: '#a42929' }] }
-                underlayColor={ '#8a0f0f' }
+                style={ [styles.bordered, styles.item, { backgroundColor: '#29a4a4' }] }
+                underlayColor={ '#29a4a4' }
                 onPress={ login }
             >
                 <Text
-                    style={ [styles.textCentered, styles.slightlyPadded] }
+                    style={ [styles.textCentered, styles.control] }
                 >Submit</Text>
             </TouchableHighlight>
-            <Text style={ [styles.slightlyPadded, { color: '#ff0000' }] }>{ error }</Text>
+            <Text style={ [styles.control, { color: '#ff0000' }] }>{ error }</Text>
         </React.Fragment>
     );
 };

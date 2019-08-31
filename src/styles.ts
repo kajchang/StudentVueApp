@@ -5,22 +5,23 @@ const styles = StyleSheet.create({
         borderColor: '#d6d7da',
         borderRadius: 4,
         borderWidth: 0.5,
-        height: 50,
-        margin: 2.5,
-        width: '75%',
     },
     container: {
         alignItems: 'center',
         backgroundColor: '#fff',
         flex: 1,
         justifyContent: 'center',
-    }, header: {
-        fontSize: 36,
-        padding: 25,
     },
-    slightlyPadded: {
-        paddingBottom: 15,
-        paddingTop: 15,
+    control: {
+        padding: 15,
+    },
+    header: {
+        fontSize: 36,
+    },
+    item: {
+        height: 50,
+        margin: 2.5,
+        width: '75%',
     },
     textCentered: {
         textAlign: 'center',

@@ -7,7 +7,7 @@
     "eject": "expo eject",
     "test": "npm run tslint && npm run jest",
     "tslint": "tslint --project .",
-    "jest": "jest"
+    "jest": "jest --passWithNoTests"
   },
   "dependencies": {
     "expo": "^32.0.0",
