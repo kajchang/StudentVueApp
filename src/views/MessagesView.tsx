@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { Header } from '../components';
+import { Header, ThisText } from '../components';
 import styles from '../styles';
 
 import { NavigationScreenProp } from 'react-navigation';
@@ -16,7 +16,7 @@ const MessagesView = (props: IAttendanceViewProps) => <React.Fragment>
         navigation={ props.navigation }
     />
     <View style={ styles.container }>
-        <Text>This is the Messages page.</Text>
+        <ThisText>This is the Messages page.</ThisText>
     </View>
 </React.Fragment>;
 

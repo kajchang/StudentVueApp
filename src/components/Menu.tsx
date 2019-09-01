@@ -76,7 +76,7 @@ const Menu = (props: IMenuProps) => {
             underlayColor={ '#fff' }
         >
             <ListItem
-                containerStyle={ [styles.bordered, styles.control, { margin: 10 }] }
+                containerStyle={ [styles.control, { margin: 5 }] }
                 titleStyle={ [styles.header] }
                 title={ item.title }
             />

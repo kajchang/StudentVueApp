@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 
+import { Font } from 'expo';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from './reducers';
@@ -32,8 +33,28 @@ const MainNavigator = createStackNavigator({
 
 const AppContainer = createAppContainer(MainNavigator);
 
-const App = () => <Provider store={ store }>
-    <AppContainer/>
-</Provider>;
+const App = () => {
+    const [fontLoaded, setFontLoaded] = React.useState(false);
+
+    React.useEffect(() => {
+        async function loadFont() {
+            await Font.loadAsync({
+                'Product Sans': require('./assets/ProductSans-Regular.ttf'),
+            });
+            await Font.loadAsync({
+                'Product Sans Bold': require('./assets/ProductSans-Bold.ttf'),
+            });
+            setFontLoaded(true);
+        }
+
+        loadFont();
+    },              []);
+
+    return (
+        fontLoaded ? <Provider store={ store }>
+            <AppContainer/>
+        </Provider> : null
+    );
+};
 
 export default App;

@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    baseText: {
+        fontFamily: 'Product Sans',
+    },
     bordered: {
         borderColor: '#d6d7da',
         borderRadius: 4,
@@ -16,7 +19,8 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     header: {
-        fontSize: 36,
+        fontFamily: 'Product Sans Bold',
+        fontSize: 42,
     },
     item: {
         height: 50,

@@ -1,18 +1,21 @@
 import * as React from 'react';
-import { KeyboardAvoidingView, Text } from 'react-native';
+import { Image, KeyboardAvoidingView, View } from 'react-native';
 
 import { NavigationScreenProp } from 'react-navigation';
 
 import styles from '../styles';
 
-import { Login } from '../components';
+import { Login, ThisText } from '../components';
 
 interface ILoginViewProps {
     navigation: NavigationScreenProp<any, any>;
 }
 
 const LoginView = (props: ILoginViewProps) => <KeyboardAvoidingView style={ styles.container } behavior="padding">
-    <Text style={ [styles.header, styles.control] }>StudentVue</Text>
+    <View style={ [styles.control, { flexDirection:'row', flexWrap:'wrap' }] }>
+        <Image source={ require('../assets/logo.png') } style={ { width: 50, height: 50 } }/>
+        <ThisText style={ styles.header }>StudentVue</ThisText>
+    </View>
     <Login
         navigation={ props.navigation }
     />

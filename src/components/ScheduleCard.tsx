@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Text, TouchableHighlight } from 'react-native';
+import { TouchableHighlight } from 'react-native';
 import { Card } from 'react-native-elements';
 import { connect } from 'react-redux';
+
+import { ThisText } from './';
 
 import {
     IBellScheduleInterface,
@@ -24,18 +26,18 @@ interface IScheduleCardProps {
 const ScheduleCard = (props: IScheduleCardProps) => {
     return (
         <Card>
-            <Text style={ { fontSize: 18, margin: 5 } }>
+            <ThisText style={ { fontSize: 18, margin: 5 } }>
                 Name: { props.studentInfo.name }
-            </Text>
-            <Text style={ { fontSize: 18, margin: 5 } }>
+            </ThisText>
+            <ThisText style={ { fontSize: 18, margin: 5 } }>
                 Student ID: { props.studentInfo.studentID }
-            </Text>
+            </ThisText>
             <TouchableHighlight
                 style={ { margin: 5 } }
                 onPress={ () => { props.navigation.replace('Barcode'); } }
                 underlayColor={ '#fff' }
             >
-                <Text style={ { fontSize: 10, color: '#29a4a4' } }> Show Barcode</Text>
+                <ThisText style={ { fontSize: 10, color: '#29a4a4' } }> Show Barcode</ThisText>
             </TouchableHighlight>
         </Card>
     );

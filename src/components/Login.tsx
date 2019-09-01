@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { Text, TextInput, TouchableHighlight } from 'react-native';
+import { TextInput, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
+
+import { ThisText } from './';
 
 import { IActionInterface, setCookies } from '../actions';
 import CredentialStorage from '../storage/CredentialStorage';
+
 import styles from '../styles';
 
 // @ts-ignore
@@ -87,13 +90,13 @@ const Login = (props: ILoginProps) => {
     return (
         <React.Fragment>
             <TextInput
-                style={ [styles.bordered, styles.item, styles.textCentered] }
+                style={ [styles.bordered, styles.item, styles.textCentered, styles.baseText] }
                 placeholder={ 'Username' }
                 value={ username }
                 onChangeText={ setUsername }
             />
             <TextInput
-                style={ [styles.bordered, styles.item, styles.textCentered] }
+                style={ [styles.bordered, styles.item, styles.textCentered, styles.baseText] }
                 secureTextEntry={ true }
                 placeholder={ 'Password' }
                 value={ password }
@@ -104,11 +107,11 @@ const Login = (props: ILoginProps) => {
                 underlayColor={ '#29a4a4' }
                 onPress={ login }
             >
-                <Text
+                <ThisText
                     style={ [styles.textCentered, styles.control] }
-                >Submit</Text>
+                >Submit</ThisText>
             </TouchableHighlight>
-            <Text style={ [styles.control, { color: '#ff0000' }] }>{ error }</Text>
+            <ThisText style={ [styles.control, { color: '#ff0000' }] }>{ error }</ThisText>
         </React.Fragment>
     );
 };
